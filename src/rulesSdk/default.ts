@@ -6,6 +6,7 @@ import {
   Calldata,
   ProviderInterface,
   RpcProvider,
+  RpcProviderOptions,
   encode,
   num,
   stark,
@@ -13,7 +14,7 @@ import {
   uint256,
 } from 'starknet'
 
-import { NetworkInfos, RulesSdkOptions, FullBlock, Uint256, Signature } from '../types'
+import { NetworkInfos, RulesSdkOptions, Uint256, Signature } from '../types'
 import { RulesSdkInterface } from './interface'
 import {
   ACCOUNTS,
@@ -61,9 +62,12 @@ function block_id(blockIdentifier: Parameters<ProviderInterface['getBlock']>[0])
 }
 
 export class ExtendedRpcProvider extends RpcProvider {
-  public async getFullBlock(blockIdentifier: Parameters<ProviderInterface['getBlock']>[0]): Promise<FullBlock> {
-    return this.fetchEndpoint('starknet_getBlockWithTxs', { block_id: block_id(blockIdentifier) }) as FullBlock
-  }
+	readonly nodeUrl: string | undefined;
+
+	constructor(optionsOrProvider?: RpcProviderOptions) {
+		super(optionsOrProvider)
+		this.nodeUrl = optionsOrProvider?.nodeUrl;
+	}
 }
 
 export class RulesSdk implements RulesSdkInterface {
